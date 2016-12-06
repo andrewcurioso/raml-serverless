@@ -7,7 +7,7 @@ This is a work in progress. Please check Github issues ([/andrewcurioso/raml-ser
 ## Installation
 1. Open a terminal to your Serverless project
 2. `npm i --save 'https://github.com/andrewcurioso/raml-serverless'`
-3. Add `raml-serverless` to your `serverless.yaml` file (see [Serverless docs](https://serverless.com/framework/docs/providers/aws/guide/plugins/#installing-plugins))
+3. Add `raml-serverless` to your `serverless.yml` file (see [Serverless docs](https://serverless.com/framework/docs/providers/aws/guide/plugins/#installing-plugins))
 
 ## Usage
 
