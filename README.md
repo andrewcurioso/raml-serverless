@@ -17,7 +17,7 @@ Example usage:
 sls raml > docs.raml
 ```
 
-RAML-Serverless will automatically create a section of the documentation for each HTTP endpoint you have in your `serverless.yaml` file.
+RAML-Serverless will automatically create a section of the documentation for each HTTP endpoint you have in your `serverless.yml` file.
 
 You can put global documentation in the `custom:` object in your Yaml file and it will be copied as is into the output RAML. Anything that can go into a RAML file can go here. For example:
 
@@ -58,6 +58,14 @@ Will produce this output in your RAML file:
 /hello:
   get:
     description: Say hello to the world
+```
+
+You can also include your RAML in a seperate file and import it into your `serverless.yml` using variables:
+
+```yaml
+custom:
+  documentation:
+    raml: ${file(raml-base.yml)}
 ```
 
 ## Contributing
