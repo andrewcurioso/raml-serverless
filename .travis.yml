@@ -2,3 +2,8 @@ language: node_js
 
 install:
   - travis_retry npm install
+
+node_js:
+  - node_js: '4.4'
+  - node_js: '5.11'
+  - node_js: '6.2'
