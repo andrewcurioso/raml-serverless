@@ -1,5 +1,9 @@
 # RAML-Serverless Plugin
 
+[![serverless](http://public.serverless.com/badges/v3.svg)](http://www.serverless.com)
+[![npm version](https://badge.fury.io/js/raml-serverless.svg)](https://badge.fury.io/js/raml-serverless)
+[![Build Status](https://travis-ci.org/andrewcurioso/raml-serverless.svg?branch=feature-unit-test)](https://travis-ci.org/andrewcurioso/raml-serverless)
+
 Work with [RAML](http://raml.org/) documentation for [Serverless v1.0](https://serverless.com/) projects.
 
 Currently it can be used to generate RAML documentation. Future versions will be able to deploy RAML documentents, stub API endpoints based on the RAML and even generate/update serverless.yml files from RAML specifications. For more information, take a look at the [Feature Roadmap](https://github.com/andrewcurioso/raml-serverless/milestones).

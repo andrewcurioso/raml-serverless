@@ -16,11 +16,15 @@ class Raml {
     };
 
     this.hooks = {
-      'raml:serverless': this.genRaml.bind(this)
+      'raml:serverless': this.ramlCommand.bind(this)
     }
   }
 
-  genRaml() {
+  ramlCommand() {
+    this.getRaml().then((raml) => console.log(raml));
+  }
+
+  getRaml() {
 
     var service = this.serverless.service;
     var docs = service.custom && service.custom.documentation && service.custom.documentation.raml;
@@ -29,9 +33,6 @@ class Raml {
 
     !spec.protocols && (spec.protocols = [ 'HTTPS' ]);
     !spec.mediaType && (spec.mediaType = 'application/json' );
-
-
-    var functions = service.functions;
 
     service.getAllFunctions().map((f) => {
       var events = service.getFunction(f).events;
@@ -78,11 +79,10 @@ class Raml {
 
     });
 
-    console.log([
+    return [
       '#%RAML 1.0',
       yaml.safeDump(spec)
-    ].join("\n"));
-
+    ].join("\n");
   }
 }
 
