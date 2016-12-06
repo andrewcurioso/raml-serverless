@@ -24,6 +24,9 @@ module.exports = class ServerlessBuilder {
         getFunction(functionName) {
           return this.functions[functionName];
         },
+        getAllFunctions() {
+          return Object.keys(this.functions);
+        },
       },
       cli: {
         log: sinon.stub(),
