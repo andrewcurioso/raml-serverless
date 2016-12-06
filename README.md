@@ -1,6 +1,8 @@
 # RAML-Serverless Plugin
 
-Generate [RAML](http://raml.org/) documentation for [Serverless](https://serverless.com/) projects.
+Work with [RAML](http://raml.org/) documentation for [Serverless v1.0](https://serverless.com/) projects.
+
+Currently it can be used to generate RAML documentation. Future versions will be able to deploy RAML documentents, stub API endpoints based on the RAML and even generate/update serverless.yml files from RAML specifications.
 
 This is a work in progress. Please check Github issues ([/andrewcurioso/raml-serverless/issues](https://github.com/andrewcurioso/raml-serverless/issues)) for a feature roadmap and consider contributing.
 
