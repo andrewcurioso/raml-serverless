@@ -45,7 +45,7 @@ functions:
     handler: handlers.index
     events:
       - http:
-          path: /hello
+          path: /hello/world
           method: get
           cors: true
           documentation:
@@ -56,8 +56,9 @@ functions:
 Will produce this output in your RAML file:
 ```yaml
 /hello:
-  get:
-    description: Say hello to the world
+  /world:
+    get:
+      description: Say hello to the world
 ```
 
 You can also include your RAML in a seperate file and import it into your `serverless.yml` using variables:
