@@ -46,8 +46,13 @@ class Raml {
       }
 
     })
+
     .then((endpoint) => {
       return endpoint && endpoint.OutputValue;
+    })
+
+    .catch((e) => {
+      return null;
     });
     
   }

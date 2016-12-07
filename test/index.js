@@ -196,8 +196,41 @@ describe('RAML-Serverless', () => {
         );
 
       });
+
     });
     
+    it('fails gracefully when it cannot get the CloudFormation stack', function() {
+
+      let provider = {
+        request: sinon.stub().returns(new Promise((x,y) => { throw new Error(); })),
+        naming: {
+          getServiceEndpointRegex: sinon.stub().returns(/./),
+          getStackName: sinon.stub().returns('somestack'),
+        }
+      };
+
+      plugin.serverless.getProvider = sinon.stub().returns(provider);
+      plugin = new RamlServerless(serverless.serverless, serverless.serverless.config);
+
+      let endpoint = plugin.getEndpointAsync();
+
+      return expect(endpoint).to.eventually.be.null
+      .then(function() {
+        expect(plugin.serverless.getProvider).to.have.been.calledOnce;
+        expect(provider.request).to.have.been.calledOnce;
+        expect(provider.naming.getStackName).to.have.been.calledOnce;
+
+        expect(plugin.serverless.getProvider).to.be.calledWith('aws');
+        expect(provider.request).to.be.calledWith(
+          'CloudFormation',
+          'describeStacks',
+          { StackName: 'somestack' },
+          plugin.options.stage,
+          plugin.options.region
+        );
+      });
+
+    });
 
   });
 
