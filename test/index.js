@@ -2,21 +2,26 @@
 
 const chai = require('chai');
 const expect = require('chai').expect;
-var yaml = require('js-yaml');
+const yaml = require('js-yaml');
+const sinon = require('sinon');
+const chaiAsPromised = require('chai-as-promised');
+const sinonChai = require("sinon-chai");
+
+chai.use(sinonChai);
+chai.use(chaiAsPromised);
 
 const RamlServerless = require('../src/index.js');
 const ServerlessBuilder = require('./support/ServerlessBuilder.js');
 
 describe('RAML-Serverless', () => {
+  let serverless, plugin;
+
+  beforeEach(() => {
+    serverless = new ServerlessBuilder({ service: { custom: {} } });
+    plugin = new RamlServerless(serverless.serverless, serverless.serverless.config);
+  });
 
   describe('.getRaml', function() {
-
-    let serverless, plugin;
-
-    beforeEach(() => {
-      serverless = new ServerlessBuilder({ service: { custom: {} } });
-      plugin = new RamlServerless(serverless.serverless, serverless.config);
-    });
 
     it('writes "#%RAML 1.0" to the first line', function() {
 
@@ -145,6 +150,85 @@ describe('RAML-Serverless', () => {
       let outObj = yaml.safeLoad(out);
 
       expect(outObj.mediaType).to.deep.equal('application/json');
+
+    });
+
+  });
+
+  describe('.getEndpointAsync', function() {
+ 
+    it('returns a promise that resolves to an endpoint', function() {
+
+      let provider = {
+        request: sinon.stub().returns(
+          Promise.resolve({
+            Stacks: [{
+              Outputs: [{ Description: "", OutputKey: "ServiceEndpoint", OutputValue: "expected" }],
+            }]
+          })
+        ),
+        naming: {
+          getServiceEndpointRegex: sinon.stub().returns(/./),
+          getStackName: sinon.stub().returns('somestack'),
+        }
+      };
+
+      plugin.serverless.getProvider = sinon.stub().returns(provider);
+      plugin = new RamlServerless(serverless.serverless, serverless.serverless.config);
+
+      let endpoint = plugin.getEndpointAsync();
+
+      return expect(endpoint).to.eventually.equal('expected')
+      .then(function() {
+
+        expect(plugin.serverless.getProvider).to.have.been.calledOnce;
+        expect(provider.request).to.have.been.calledOnce;
+        expect(provider.naming.getServiceEndpointRegex).to.have.been.calledOnce;
+        expect(provider.naming.getStackName).to.have.been.calledOnce;
+
+        expect(plugin.serverless.getProvider).to.be.calledWith('aws');
+        expect(provider.request).to.be.calledWith(
+          'CloudFormation',
+          'describeStacks',
+          { StackName: 'somestack' },
+          plugin.options.stage,
+          plugin.options.region
+        );
+
+      });
+
+    });
+    
+    it('fails gracefully when it cannot get the CloudFormation stack', function() {
+
+      let provider = {
+        request: sinon.stub().returns(new Promise((x,y) => { throw new Error(); })),
+        naming: {
+          getServiceEndpointRegex: sinon.stub().returns(/./),
+          getStackName: sinon.stub().returns('somestack'),
+        }
+      };
+
+      plugin.serverless.getProvider = sinon.stub().returns(provider);
+      plugin = new RamlServerless(serverless.serverless, serverless.serverless.config);
+
+      let endpoint = plugin.getEndpointAsync();
+
+      return expect(endpoint).to.eventually.be.null
+      .then(function() {
+        expect(plugin.serverless.getProvider).to.have.been.calledOnce;
+        expect(provider.request).to.have.been.calledOnce;
+        expect(provider.naming.getStackName).to.have.been.calledOnce;
+
+        expect(plugin.serverless.getProvider).to.be.calledWith('aws');
+        expect(provider.request).to.be.calledWith(
+          'CloudFormation',
+          'describeStacks',
+          { StackName: 'somestack' },
+          plugin.options.stage,
+          plugin.options.region
+        );
+      });
 
     });
 

@@ -7,6 +7,9 @@ class Raml {
     this.serverless = serverless;
     this.options = options;
 
+    /* Note: this will not work once non-AWS providers are added */
+    this.provider = this.serverless.getProvider('aws');
+
     this.commands = {
       raml: {
         lifecycleEvents: [
@@ -21,10 +24,40 @@ class Raml {
   }
 
   ramlCommand() {
-    this.getRaml().then((raml) => console.log(raml));
+    this.getEndpointAsync()
+    .then((endpoint) => console.log(this.getRaml(endpoint)));
   }
 
-  getRaml() {
+  getEndpointAsync() {
+    const stackName = this.provider.naming.getStackName(this.options.stage);
+
+    return this.provider.request('CloudFormation',
+      'describeStacks',
+      { StackName: stackName },
+      this.options.stage,
+      this.options.region)
+
+    .then((result) => {
+      let outputs;
+      if ( result && result.Stacks.length ) {
+        outputs = result.Stacks[0].Outputs;
+        const serviceEndpointOutputRegex = this.provider.naming.getServiceEndpointRegex();
+        return outputs.filter(x => x.OutputKey.match(serviceEndpointOutputRegex)).reduce(x => x);
+      }
+
+    })
+
+    .then((endpoint) => {
+      return endpoint && endpoint.OutputValue;
+    })
+
+    .catch((e) => {
+      return null;
+    });
+    
+  }
+
+  getRaml(endpoint) {
 
     var service = this.serverless.service;
     var docs = service.custom && service.custom.documentation && service.custom.documentation.raml;
@@ -33,6 +66,7 @@ class Raml {
 
     !spec.protocols && (spec.protocols = [ 'HTTPS' ]);
     !spec.mediaType && (spec.mediaType = 'application/json' );
+    !spec.baseUri && endpoint && (spec.baseUri = endpoint);
 
     service.getAllFunctions().map((f) => {
       var events = service.getFunction(f).events;

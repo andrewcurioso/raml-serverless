@@ -35,9 +35,16 @@ module.exports = class ServerlessBuilder {
       config: {
         servicePath: '',
       },
+      getProvider() {
+        return null;
+      },
     };
     this.serverless = _.merge(serverlessDefaults, serverless);
+
     this.serverless.service.getFunction = this.serverless.service.getFunction.bind(this.serverless.service);
+    this.serverless.service.getAllFunctions = this.serverless.service.getAllFunctions.bind(this.serverless.service);
+    this.serverless.getProvider = this.serverless.getProvider.bind(this.serverless.service);
+
   }
 
   addApiKeys(keys) {
