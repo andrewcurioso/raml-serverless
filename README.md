@@ -2,7 +2,7 @@
 
 [![serverless](http://public.serverless.com/badges/v3.svg)](http://www.serverless.com)
 [![npm version](https://badge.fury.io/js/raml-serverless.svg)](https://badge.fury.io/js/raml-serverless)
-[![Build Status](https://travis-ci.org/andrewcurioso/raml-serverless.svg?branch=feature-unit-test)](https://travis-ci.org/andrewcurioso/raml-serverless)
+[![Build Status](https://travis-ci.org/andrewcurioso/raml-serverless.svg?branch=master)](https://travis-ci.org/andrewcurioso/raml-serverless)
 
 Work with [RAML](http://raml.org/) documentation for [Serverless v1.0](https://serverless.com/) projects.
 
