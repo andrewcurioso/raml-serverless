@@ -75,4 +75,4 @@ custom:
 
 ## Contributing
 
-This plugin is a work in progress. If you would like to contribute, go to Github issues ([/andrewcurioso/raml-serverless/issues](https://github.com/andrewcurioso/raml-serverless/issues)) and pick and issue to work on or create a new issue.
+This plugin is a work in progress. If you would like to contribute, go to Github issues ([/andrewcurioso/raml-serverless/issues](https://github.com/andrewcurioso/raml-serverless/issues)) and pick an issue to work on or create a new issue.
